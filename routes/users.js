@@ -13,7 +13,7 @@ const saltRounds = 10;
 
 router.post("/register", async (req, res) => {
 
-    const { email, password } = req.body;
+    const { email, username, password } = req.body;
     console.log(`Received registration from ${email}`);
 
     try {
@@ -23,6 +23,7 @@ router.post("/register", async (req, res) => {
 
         await knex('users').insert({
             email: email, 
+            username: username,
             password: hashedPassword
         });
 
@@ -39,30 +40,31 @@ router.post("/register", async (req, res) => {
 
 router.post("/login", async (req, res) => {
 
-    const { email, password } = req.body;
-   console.log(`User logging in with ${email}`)
+    const { username, password } = req.body;
+   console.log(`User logging in with ${username}`)
 
     try {
-        const user = await knex('users').where({
-            email: email
+        console.log(`Attempting to find ${username}`);
+        const userInDB = await knex('users').where({
+            username: username
         }).first();
         
-        if (!user) {
-            console.log(`${email} not found.`);
+        if (!userInDB) {
+            console.log(`${username} not found.`);
             return res.status(401).json({ error: "User not found." });
         }
 
-        const match = await bycrpyt.compare(password, storedHashedPassword);
+        const match = await bycrpyt.compare(password, userInDB.password);
 
         if (match) {
-            console.log(`${email} found and hashed password matched.`);
-            const token = jwt.sign({ email: email }, SECRET_KEY, { expiresIn: '48h' });
+            console.log(`${username} found and hashed password matched.`);
+            const token = jwt.sign({ username: username }, SECRET_KEY, { expiresIn: '48h' });
             res.status(200).json({ 
                 message: "Login successful", 
                 token: token 
             });
         } else {
-            console.log(`${email} found but hashed password did not match.`);
+            console.log(`${username} found but hashed password did not match.`);
             res.status(401).json({ error: "Invalid credentials."})
         }
 
