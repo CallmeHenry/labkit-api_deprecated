@@ -7,7 +7,7 @@ const saltRounds = 10;
 
 const registerUser = async (req, res) => {
 
-    const { email, username, password } = req.body;
+    const { firstName, lastName, email, password } = req.body;
     console.log(`Received registration from ${email}`);
 
     try {
@@ -16,9 +16,10 @@ const registerUser = async (req, res) => {
         console.log(`Password successfully encrypted ${hashedPassword}`)
 
         await knex('users').insert({
+            firstName: firstName,
+            lastName: lastName,
             email: email,
-            username: username,
-            password: hashedPassword
+            password: hashedPassword,
         });
 
         console.log(`${email} registered successfully.`);
@@ -33,31 +34,31 @@ const registerUser = async (req, res) => {
 
 async function loginUser(req, res) {
 
-    const { username, password } = req.body;
-    console.log(`User logging in with ${username}`)
+    const { email, password } = req.body;
+    console.log(`User logging in with ${email}`)
 
     try {
-        console.log(`Attempting to find ${username}`);
+        console.log(`Attempting to find ${email}`);
         const userInDB = await knex('users').where({
-            username: username
+            email: email
         }).first();
 
         if (!userInDB) {
-            console.log(`${username} not found.`);
+            console.log(`${email} not found.`);
             return res.status(401).json({ error: "User not found." });
         }
 
         const match = await bycrpyt.compare(password, userInDB.password);
 
         if (match) {
-            console.log(`${username} found and hashed password matched.`);
-            const token = jwt.sign({ username: username }, SECRET_KEY, { expiresIn: '48h' });
+            console.log(`${email} found and hashed password matched.`);
+            const token = jwt.sign({ email: email }, SECRET_KEY, { expiresIn: '48h' });
             res.status(200).json({
                 message: "Login successful",
                 token: token
             });
         } else {
-            console.log(`${username} found but hashed password did not match.`);
+            console.log(`${email} found but hashed password did not match.`);
             res.status(401).json({ error: "Invalid credentials." })
         }
 
