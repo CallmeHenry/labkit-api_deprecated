@@ -46,7 +46,7 @@ async function scrape() {
     }
 }
 
-async function getComputer(req, res) {
+async function getModel(req, res) {
 
     // if doesn't exist in database, scrape it
 
@@ -62,5 +62,5 @@ async function getComputer(req, res) {
 }
 
 module.exports = {
-    getComputer,
+    getModel,
 }

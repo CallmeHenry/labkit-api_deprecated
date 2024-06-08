@@ -4,7 +4,7 @@ const app = express();
 const cors = require("cors");
 
 const userRoutes = require("./routes/users");
-const computersRoutes = require("./routes/computers");
+const modelsRoutes = require("./routes/models");
 
 const PORT = process.env.PORT;
 
@@ -26,7 +26,7 @@ function authorize(req, res, next) {
 }
 
 app.use("/signin", userRoutes);
-app.use("/toolkit", computersRoutes);
+app.use("/toolkit", modelsRoutes);
 
 app.listen(PORT, () => {
     console.log(`Listening on ${PORT}`);
