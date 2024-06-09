@@ -1,12 +1,24 @@
 exports.seed = async function (knex) {
     // Deletes ALL existing entries
-    await knex('models').del();
+    await knex('computers').del();
 
+    // Inserts seed entries
+    await knex('computers').insert([
+        {
+            id: 1,
+            serial: "nxhqbaa0011123d6107600",
+            model: "CP713-2W",
+            brand: "Acer",
+            processor: "Intel® Core™ i3-10110U processor Dual-core 2.10 GHz",
+            ram: "8 GB, DDR4 SDRAM",
+            storage: "256 GB SSD",
+            os: "ChromeOS",
+            screen: '13.5" 2K (2256 x 1504) 3:2 IPS Touchscreen',
+        }
+    ]);
 };
 
 
-//     // Inserts seed entries
-//     await knex('models').insert([
 //         {
 //             id: 1,
 //             serial: "nxhqbaa0011123d6107600",
@@ -162,5 +174,3 @@ exports.seed = async function (knex) {
 //                 processor: "Intel® Core™ i3-10110U processor Dual-core 2.10 GHz"
 //             },
 //         },
-
-//     ]);
