@@ -3,6 +3,6 @@ const modelsController = require("../controllers/models-controller.js");
 
 router
     .route("/assets/models")
-    .get(modelsController.getModel);
+    .post(modelsController.fetchModel);
 
 module.exports = router;

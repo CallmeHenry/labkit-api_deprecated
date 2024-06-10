@@ -1,11 +1,15 @@
 const express = require("express");
 const router = express.Router()
 
-const assetsController = require("../controllers/computers-controller.js");
+const computersController = require("../controllers/computers-controller.js");
 
 router
     .route('/assets/computers')
-    .get(assetsController.getAssets);
+    .get(computersController.getComputers)
+    .post(computersController.addSingleComputer);
 
-    
+router
+    .route('/assets/computers/:serial')
+    .get(computersController.getSingleComputer);
+
 module.exports = router;

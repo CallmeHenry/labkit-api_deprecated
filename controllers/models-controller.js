@@ -2,7 +2,7 @@ require('dotenv').config();
 const knex = require("knex")(require("../knexfile"));
 const playwright = require('playwright');
 
-async function scrape() {
+async function scrapeAcer(serial) {
 
     try {
         console.log("Attempting to create browser.");
@@ -18,7 +18,7 @@ async function scrape() {
         console.log("Attempting to accept all cookies.");
         await page.locator('#onetrust-accept-btn-handler').click();
 
-        await page.fill('input[placeholder="What can we help you find"]', 'nxhqbaa0011123d6107600');
+        await page.fill('input[placeholder="What can we help you find"]', serial);
         await page.press('input[placeholder="What can we help you find"]', 'Enter');
         await page.waitForURL('**/downloads', { timeout: 300000 });
 
@@ -70,16 +70,29 @@ async function scrape() {
         console.error(error);
     }
 }
-
-async function getModel(req, res) {
+function convertModeltoComputer(model) {
+    
+}
+async function fetchModel(req, res) {
 
     // if doesn't exist in database, scrape it
 
+    const { brand, serial } = req.body;
+    console.log(`Fetching model with ${brand} and ${serial}`);
+
     // testing purpose: scrape
     try {
-        const computer = await scrape();
-        await knex('models').insert({ modelDetails: computer });
-        return res.status(200).json({ computer });
+        if (brand === "Acer") {
+            console.log("Scraping Acer website...");
+            const computer = await scrapeAcer(serial);
+            await knex('models').insert({ modelDetails: computer });
+            console.log("Acer scraping successful.");
+            return res.status(200).json({ computer });
+        } else {
+            console.log("Unsupported brand.");
+            return res.status(404).json({ message: "Unsupported brand."});
+        }
+
     } catch (error) {
         return res.status(500).json({ message: "Error scraping computer." });
     }
@@ -88,5 +101,5 @@ async function getModel(req, res) {
 }
 
 module.exports = {
-    getModel,
+    fetchModel,
 }
