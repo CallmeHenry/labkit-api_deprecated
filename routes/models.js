@@ -5,4 +5,8 @@ router
     .route("/assets/models")
     .post(modelsController.fetchModel);
 
+router
+    .route("/assets/models/:model")
+    .get(modelsController.fetchModelFromDB);
+
 module.exports = router;

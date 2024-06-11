@@ -70,15 +70,28 @@ async function scrapeAcer(serial) {
         console.error(error);
     }
 }
-function convertModeltoComputer(model) {
-    
+
+async function fetchModelFromDB(req, res) {
+    const model  = req.params.model;
+    console.log(`Fetching model ${model} from computers table.`);
+
+    const computerInDB = await knex('computers').where({ model: model }).first();
+    if (computerInDB) {
+        console.log("Model found in DB.");
+        return res.status(200).json({ computerInDB });
+    } else {
+        console.log("Model not found in DB.");
+        return res.status(404).json({ message: "Model not found in DB." });
+    }
+
 }
+
 async function fetchModel(req, res) {
 
-    // if doesn't exist in database, scrape it
 
-    const { brand, serial } = req.body;
-    console.log(`Fetching model with ${brand} and ${serial}`);
+    const { brand, serial, model } = req.body;
+    console.log(`Fetching model ${model} with ${brand} and ${serial}`);
+
 
     // testing purpose: scrape
     try {
@@ -90,7 +103,7 @@ async function fetchModel(req, res) {
             return res.status(200).json({ computer });
         } else {
             console.log("Unsupported brand.");
-            return res.status(404).json({ message: "Unsupported brand."});
+            return res.status(404).json({ message: "Unsupported brand." });
         }
 
     } catch (error) {
@@ -101,5 +114,6 @@ async function fetchModel(req, res) {
 }
 
 module.exports = {
+    fetchModelFromDB,
     fetchModel,
 }

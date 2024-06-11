@@ -6,10 +6,13 @@ const computersController = require("../controllers/computers-controller.js");
 router
     .route('/assets/computers')
     .get(computersController.getComputers)
-    .post(computersController.addSingleComputer);
+    .post(computersController.addSingleComputer)
+    .put(computersController.updateSingleComputer);
 
 router
     .route('/assets/computers/:serial')
-    .get(computersController.getSingleComputer);
+    .get(computersController.getSingleComputer)
+    .delete(computersController.deleteSingleComputer);
+
 
 module.exports = router;
