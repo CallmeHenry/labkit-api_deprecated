@@ -15,7 +15,7 @@ router
     .delete(computersController.deleteSingleComputer);
 
 router
-    .route('/assets/test')
+    .route('/assets/dashboard')
     .get(computersController.getTotalNumOfComputers);
 
 module.exports = router;
