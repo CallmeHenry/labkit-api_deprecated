@@ -91,10 +91,25 @@ async function deleteSingleComputer(req, res) {
     }
 }
 
+
+// TODO: add field for desktops, laptops, tiny pcs, etc.
+async function getTotalNumOfComputers(req, res) {
+    try {
+        const countResult = await knex('computers').count('serial as count');
+        const totalCount = countResult[0].count;
+        console.log(`Total number of computers: ${totalCount}`);
+        return res.status(200).json({ name: "Laptops", value: totalCount });
+    } catch (error) {
+        console.error('Error fetching total number of computers:', error);
+        return res.status(500).json({ message: 'Error fetching total number of computers.' });
+    }
+}
+
 module.exports = {
     getComputers,
     getSingleComputer,
     addSingleComputer,
     updateSingleComputer,
     deleteSingleComputer,
+    getTotalNumOfComputers,
 }
