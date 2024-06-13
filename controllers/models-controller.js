@@ -21,28 +21,19 @@ async function scrapeAcer(serial) {
         await page.fill('input[placeholder="What can we help you find"]', serial);
         await page.press('input[placeholder="What can we help you find"]', 'Enter');
         await page.waitForURL('**/downloads', { timeout: 300000 });
-
+        await page.locator('#tab-product_details').click();
         const currentURL = page.url();
         console.log("Current URL: " + currentURL);
 
-        // const model = await page.textContent('#model');
-        // console.log("Model: ", model);
-        // const partNumber = await page.textContent('#partNumber');
-        // console.log("Part number: ", partNumber);
-
-        // computer.model = model;
-        // computer.partNumber = partNumber;
+    
 
         const computerDetails = await page.evaluate(() => {
             const extractText = (element) => element && element.innerText.trim();
 
-            // Select the table rows containing the relevant information
             const rows = Array.from(document.querySelectorAll('table tr'));
 
-            // Initialize an empty object to store the extracted details
             const details = {};
 
-            // Iterate through each row and extract the relevant data
             rows.forEach((row) => {
                 const labelCell = row.querySelector('td:first-child');
                 const valueCell = row.querySelector('td:last-child');
@@ -93,7 +84,6 @@ async function fetchModel(req, res) {
     console.log(`Fetching model ${model} with ${brand} and ${serial}`);
 
 
-    // testing purpose: scrape
     try {
         if (brand === "Acer") {
             console.log("Scraping Acer website...");
